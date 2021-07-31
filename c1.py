@@ -1,7 +1,6 @@
 #%%
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
 
 # q28
 x= [82,96,99,102,103,103,106,107,108,108,108,108,109,110,110,111,113,113,113,113,115,115,118,118,119,121,122,122,127,132,136,140,146] 
