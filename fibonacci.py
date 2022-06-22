@@ -33,3 +33,7 @@ def fib_bottom_up(n):
     for i in range(3, n+1):
         bottom_up[i] = bottom_up[i-1] + bottom_up[i-2]
     return bottom_up[n]
+
+if __name__ == "__main__":
+    f1 = fib(10)
+    print(f'f1={f1}')
