@@ -42,11 +42,16 @@ trainloader = torch.utils.data.DataLoader(train_data, batch_size=64,
                                           shuffle=True, num_workers=2)
 testloader = torch.utils.data.DataLoader(test_data, batch_size=64,
                                          shuffle=False, num_workers=2)
+d_class2idx = train_data.class_to_idx
+d_idx2class = dict(zip(d_class2idx.values(), d_class2idx.keys()))
+
+
 # image (1,28,28)
 # check what's diff between train*
 print('train_data:', train_data.__dict__)
 # print(dir(trainloader))
 print('trainlader:', trainloader.__dict__)
+
 
 
 class Net(nn.Module):
@@ -136,3 +141,21 @@ with torch.no_grad():
     
 print("Accuracy: ", correct/total)
 
+class_correct = list(0 for i in range(10))  # Holds how many correct images for the class
+class_total = list(0 for i in range(10))  # Holds total images for the class 
+
+
+with torch.no_grad(): 
+    for i, data in enumerate(testloader): 
+        images, labels = data 
+        outputs = model(images) 
+        _, predicted = torch.max(outputs, 1)
+        c = (predicted == labels)
+        for j in range(4): 
+            label = labels[j]
+            class_correct[label] += c[j].item()
+            class_total[label] += 1
+            
+for i in range(10):
+    print('Accuracy of %5s : %2d %%' % (
+        d_idx2class[i], 100 * class_correct[i] / class_total[i]))
