@@ -102,7 +102,7 @@ criterion = nn.CrossEntropyLoss()
 # for var_name in optimizer.state_dict():
 #     print(var_name, "\t", optimizer.state_dict()[var_name])
 
-
+model.train()
 for epoch in range(2):  # loop over the dataset multiple times
 
     running_loss = 0.0
@@ -132,6 +132,7 @@ for epoch in range(2):  # loop over the dataset multiple times
 print('Finished Training')
 
 # test data
+model.eval()
 
 total = 0  # keeps track of how many images we have processed 
 correct = 0  # keeps track of how many correct images our net predicts
