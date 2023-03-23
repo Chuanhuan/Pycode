@@ -1,6 +1,9 @@
 # ref:
 # [CIFAR10 CNN](https://tomroth.com.au/pytorch-cnn/)
 # [hw3](https://colab.research.google.com/drive/15hMu9YiYjE_6HY99UXon2vKGk2KwugWu)
+# This code for NMIST dataset 
+
+
 
 import torch
 import torch.nn as nn
