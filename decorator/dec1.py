@@ -23,6 +23,7 @@ def dog_can_poo():
     print("I can poo like a super pooping machine!")
 
 
+dog_11 = dog_can_jump
 
 if __name__ == "__main__":
     dog_1 = dog_can_pee
