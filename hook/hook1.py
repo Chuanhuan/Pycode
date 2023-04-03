@@ -10,7 +10,7 @@ a = torch.tensor(7.0, requires_grad=True)
 b = torch.tensor(13.0, requires_grad=True)
 c = a * b
 c.retain_grad()#to store the gradient of C
-# c.backward()
+c.backward()
 
 print(a.grad)
 print(b.grad)
@@ -48,3 +48,13 @@ feats = {} #an empty dictionary
 def hook_func(m , inp ,op):
    feats['feat'] = op.detach()
 
+#%% 
+import pandas as pd
+import numpy as np
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+import shap
+import os
+
+# Load the iris dataset
