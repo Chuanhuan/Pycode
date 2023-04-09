@@ -1,64 +1,66 @@
 # ref:
 # [CIFAR10 CNN](https://tomroth.com.au/pytorch-cnn/)
 # [hw3](https://colab.research.google.com/drive/15hMu9YiYjE_6HY99UXon2vKGk2KwugWu)
-# This code for NMIST dataset 
-
+# This code for NMIST dataset
 
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import torch.nn.functional as F
+import torch.optim as optim
 import torchvision.transforms as transforms
-
 from torchvision import datasets
 from torchvision.transforms import ToTensor
-
 
 # test
 # a = torch.randn([2,3,4])
 # print(a.shape)
 # print(a.view(-1,4).shape)
 
-train_tfm = transforms.Compose([
-    # Resize the image into a fixed shape (height = width = 128)
-    # transforms.Resize((128, 128)),
-    # You may add some transforms here.
-    # ToTensor() should be the last one of the transforms.
-    transforms.ToTensor(),
-])
+train_tfm = transforms.Compose(
+    [
+        # Resize the image into a fixed shape (height = width = 128)
+        # transforms.Resize((128, 128)),
+        # You may add some transforms here.
+        # ToTensor() should be the last one of the transforms.
+        transforms.ToTensor(),
+    ]
+)
 
-test_tfm = transforms.Compose([
-    # transforms.Resize((128, 128)),
-    transforms.ToTensor(),
-])
+test_tfm = transforms.Compose(
+    [
+        # transforms.Resize((128, 128)),
+        transforms.ToTensor(),
+    ]
+)
 
 train_data = datasets.FashionMNIST(
-    root = 'data',
-    train = True,                         
-    transform = train_tfm, 
-    download = True,            
+    root="data",
+    train=True,
+    transform=train_tfm,
+    download=True,
 )
 test_data = datasets.FashionMNIST(
-    root = 'data',
-    train = False,
-    transform = test_tfm,
+    root="data",
+    train=False,
+    transform=test_tfm,
 )
 
-trainloader = torch.utils.data.DataLoader(train_data, batch_size=64,
-                                          shuffle=True, num_workers=2)
-testloader = torch.utils.data.DataLoader(test_data, batch_size=64,
-                                         shuffle=False, num_workers=2)
+trainloader = torch.utils.data.DataLoader(
+    train_data, batch_size=64, shuffle=True, num_workers=2
+)
+testloader = torch.utils.data.DataLoader(
+    test_data, batch_size=64, shuffle=False, num_workers=2
+)
 d_class2idx = train_data.class_to_idx
 d_idx2class = dict(zip(d_class2idx.values(), d_class2idx.keys()))
 
 
 # image (1,28,28)
 # check what's diff between train*
-print('train_data:', train_data.__dict__)
+print("train_data:", train_data.__dict__)
 # print(dir(trainloader))
-print('trainlader:', trainloader.__dict__)
-
+print("trainlader:", trainloader.__dict__)
 
 
 class Net(nn.Module):
@@ -84,13 +86,12 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
+
 model = Net()
 print(model)
 
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 criterion = nn.CrossEntropyLoss()
-
-
 
 
 # Print model's state_dict
@@ -107,12 +108,11 @@ criterion = nn.CrossEntropyLoss()
 
 model.train()
 for epoch in range(2):  # loop over the dataset multiple times
-
     running_loss = 0.0
-    for i, data in enumerate(trainloader): # trainloader has batch_size
-    # for i, data in enumerate(train_data, 0):
+    for i, data in enumerate(trainloader):  # trainloader has batch_size
+        # for i, data in enumerate(train_data, 0):
         # get the inputs
-        inputs, labels  = data
+        inputs, labels = data
         # zero the parameter gradients
         optimizer.zero_grad()
 
@@ -126,44 +126,47 @@ for epoch in range(2):  # loop over the dataset multiple times
 
         # print statistics
         running_loss += loss.item()
-        if i % 200 == 199:    # print every 200 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 200))
+        if i % 200 == 199:  # print every 200 mini-batches
+            print("[%d, %5d] loss: %.3f" % (epoch + 1, i + 1, running_loss / 200))
             running_loss = 0.0
             # break
 
-print('Finished Training')
+print("Finished Training")
 
 # test data
 model.eval()
 
-total = 0  # keeps track of how many images we have processed 
+total = 0  # keeps track of how many images we have processed
 correct = 0  # keeps track of how many correct images our net predicts
 with torch.no_grad():
-    for i, data in enumerate(testloader): 
+    for i, data in enumerate(testloader):
         images, labels = data
         outputs = model(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size()[0]
         correct += (predicted == labels).sum().item()
-    
-print("Accuracy: ", correct/total)
 
-class_correct = list(0 for i in range(10))  # Holds how many correct images for the class
-class_total = list(0 for i in range(10))  # Holds total images for the class 
+print("Accuracy: ", correct / total)
+
+class_correct = list(
+    0 for i in range(10)
+)  # Holds how many correct images for the class
+class_total = list(0 for i in range(10))  # Holds total images for the class
 
 
-with torch.no_grad(): 
-    for i, data in enumerate(testloader): 
-        images, labels = data 
-        outputs = model(images) 
+with torch.no_grad():
+    for i, data in enumerate(testloader):
+        images, labels = data
+        outputs = model(images)
         _, predicted = torch.max(outputs, 1)
-        c = (predicted == labels)
-        for j in range(4): 
+        c = predicted == labels
+        for j in range(4):
             label = labels[j]
             class_correct[label] += c[j].item()
             class_total[label] += 1
-            
+
 for i in range(10):
-    print('Accuracy of %5s : %2d %%' % (
-        d_idx2class[i], 100 * class_correct[i] / class_total[i]))
+    print(
+        "Accuracy of %5s : %2d %%"
+        % (d_idx2class[i], 100 * class_correct[i] / class_total[i])
+    )
