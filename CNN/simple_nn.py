@@ -25,3 +25,4 @@ print(model.parameters())
 
 
 plt.plot([1, 2, 3, 4], [11, 33, 22, 11])
+plt.show()
